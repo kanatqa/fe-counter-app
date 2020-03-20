@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import './App.css';
 import Counter from "./Counter";
 import AddCounterForm from "./AddCounterForm";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input} from 'reactstrap';
+import ConfirmationDelete from "./ConfirmationDelete";
 
 
 
 function App() {
+
     const initialCountersState = [
         {id: 123, name: 'Counter1', count: 2},
         {id: 234, name: 'Counter2', count: 5},
@@ -14,11 +15,7 @@ function App() {
         {id: 456, name: 'Counter4', count: 48},
     ];
     const [counters, setCounters] = useState(initialCountersState);
-    const [isOpenModalDeleteConfirmation, setIsOpenModalDeleteConfirmaition] = useState(false);
-    const [confirmModalOriginName, setConfirmModalOriginName] = useState(false);
-    const [confirmModalOriginId, setConfirmModalOriginId] = useState(false);
-    const [isDisabledDeleteConfirmaitionButton, setIsDisabledDeleteConfirmaitionButton] = useState(true);
-    const [confirmUserInputValue, setConfirmUserInputValue] = useState();
+    const [confirmCounter, setConfirmCounter] = useState({});
 
     const resetTotalCount = () => {
         console.log('reset total count');
@@ -45,23 +42,17 @@ function App() {
         setCounters(newCounters);
 
     };
-    const confirmRemoveCounter = (id, name) => {
-        setIsOpenModalDeleteConfirmaition(true);
-        setConfirmModalOriginName(name);
-        setConfirmModalOriginId(id);
-
-
+    const confirmRemoveCounter = (counter) => {
+        setConfirmCounter(counter);
     };
     const removeCounfirmed = id => {
-        const newCounters = counters.filter(el => el.id !== confirmModalOriginId);
+        const newCounters = counters.filter(el => el.id !== confirmCounter.id);
         setCounters(newCounters);
-        setIsOpenModalDeleteConfirmaition(false);
-        setIsDisabledDeleteConfirmaitionButton(true);
+        setConfirmCounter({});
 
     }
     const confirmDeleteCancel = id => {
-        setIsOpenModalDeleteConfirmaition(false);
-        setIsDisabledDeleteConfirmaitionButton(true);
+        setConfirmCounter({});
 
     }
     const addCounter = (name, count) => {
@@ -72,11 +63,7 @@ function App() {
         }];
         setCounters(newCounters);
     };
-    const modalConfirmationUserInputChange =(e) =>{
-        const inputText = e.target.value;
-        setIsDisabledDeleteConfirmaitionButton(inputText.trim().toLowerCase() !== confirmModalOriginName.trim().toLowerCase());
 
-    };
 
     return (
         <div className='container'>
@@ -87,9 +74,7 @@ function App() {
             <hr/>
             {
                 counters.map(el => <Counter key={el.id}
-                                            id={el.id}
-                                            name={el.name}
-                                            count={el.count}
+                                            counter={el}
                                             increment={incrementCounter}
                                             decrement={decrementCounter}
                                             remove={confirmRemoveCounter}
@@ -100,30 +85,12 @@ function App() {
 
             <hr/>
             <AddCounterForm onSubmit={addCounter}/>
+            <ConfirmationDelete
+            name={confirmCounter.name}
+            onSuccess={removeCounfirmed}
+            onCancel={confirmDeleteCancel}
+            />
 
-            <Button color="primary">primary</Button>{' '}
-            <Modal isOpen={isOpenModalDeleteConfirmation} toggle={confirmDeleteCancel}>
-                <ModalHeader >Delete confirmation</ModalHeader>
-                <ModalBody>
-                    <p>
-                    Enter counter name <strong>{confirmModalOriginName}</strong> to delete it.
-                    </p>
-                    <FormGroup>
-                        <Input type="email"
-                               name="email"
-                               id="exampleEmail"
-                               placeholder="with a placeholder"
-                               onChange={modalConfirmationUserInputChange}
-                        />
-                    </FormGroup>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="danger"
-                            onClick={removeCounfirmed}
-                            disabled={isDisabledDeleteConfirmaitionButton}>Delete</Button>{' '}
-                    <Button color="secondary" onClick={confirmDeleteCancel}>Cancel</Button>
-                </ModalFooter>
-            </Modal>
         </div>
     );
 }

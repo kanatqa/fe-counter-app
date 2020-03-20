@@ -2,26 +2,27 @@ import React from 'react';
 import './App.css';
 
 function Counter(props) {
+    const{counter, increment, decrement, remove}=props;
     return (
         <div className='card mb-2'>
             <div className='card-body'>
                 <div className="row">
                     <div className="col">
-                        ID <strong>{props.id}</strong>
+                        ID <strong>{counter.id}</strong>
                     </div>
                     <div className="col">
 
-                        Counter name <strong>{props.name}</strong>
+                        Counter name <strong>{counter.name}</strong>
                     </div>
                     <div className="col">
 
-                        <button onClick={() => props.decrement(props.id)} className='btn btn-primary'>-</button>
-                        <strong>{props.count}</strong>
+                        <button onClick={() => decrement(counter.id)} className='btn btn-primary'>-</button>
+                        <strong>{counter.count}</strong>
 
-                        <button onClick={() => props.increment(props.id)} className='btn btn-primary'>+</button>
+                        <button onClick={() => increment(counter.id)} className='btn btn-primary'>+</button>
                     </div>
                     <div className="col">
-                        <button onClick={() => props.remove(props.id, props.name)} className='btn btn-danger'>Delete</button>
+                        <button onClick={() => remove(counter)} className='btn btn-danger'>Delete</button>
 
                     </div>
 
